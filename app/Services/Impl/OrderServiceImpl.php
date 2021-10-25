@@ -2,6 +2,7 @@
 
 namespace App\Services\Impl;
 
+use App\Events\OrderSavedEvent;
 use App\Exceptions\StockIsNotAvailableException;
 use App\Models\Order;
 use App\Models\User;
@@ -35,7 +36,9 @@ class OrderServiceImpl extends BaseServiceImpl implements OrderService
     {
         $productIdQuantityMap = $this->extractProductIdQuantityMap($orderCreateInfo);
         $productInfo = $this->generateProductsOrderInfo($productIdQuantityMap);
-        return $this->repository->create($user, $productInfo);
+        $order = $this->repository->create($user, $productInfo);
+        OrderSavedEvent::dispatch($order);
+        return $order;
     }
 
     /**
@@ -48,7 +51,9 @@ class OrderServiceImpl extends BaseServiceImpl implements OrderService
         $order = $this->repository->findByIdOrFail($id);
         $productIdQuantityMap = $this->extractProductIdQuantityMap($orderCreateInfo);
         $productInfo = $this->generateProductsOrderInfo($productIdQuantityMap);
-        return $this->repository->update($order, $productInfo);
+        $updatedOrder = $this->repository->update($order, $productInfo);
+        OrderSavedEvent::dispatch($updatedOrder);
+        return $updatedOrder;
     }
 
     public function deleteById(int $id): bool

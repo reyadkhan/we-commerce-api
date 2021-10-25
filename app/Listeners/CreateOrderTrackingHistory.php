@@ -2,29 +2,36 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Enums\OrderTrackingStatus;
+use App\Events\OrderSavedEvent;
+use App\Models\OrderTrackingHistory;
 
 class CreateOrderTrackingHistory
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Handle the event.
      *
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(OrderSavedEvent $event)
     {
-        //
+        $history = new OrderTrackingHistory;
+        $history->order_price = $event->order->amount;
+        $history->order_quantity = $event->order->products->sum('pivot.quantity');
+        $history->product_ids = $event->order->products->pluck('id')->toArray();
+
+        if( ! $event->order->trackingHistories()->exists()) {
+            $history->status = OrderTrackingStatus::CREATED();
+        } else {
+            $history->status = OrderTrackingStatus::UPDATED();
+        }
+        $history->details = getOrderTrackingDetails(
+            $history->status,
+            getProductsSerializeName($event->order->products),
+            $history->order_price, $history->order_quantity
+        );
+        $history->order()->associate($event->order);
+        $history->save();
     }
 }
