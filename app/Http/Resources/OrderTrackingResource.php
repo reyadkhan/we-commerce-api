@@ -19,8 +19,8 @@ class OrderTrackingResource extends JsonResource
             'status' => $this->status,
             'orderPrice' => $this->order_price,
             'orderQuantity' => $this->order_quantity,
-            'products' => ProductResource::collection($this->products),
-            'details' => $this->details
+            'details' => $this->details,
+            'products' => ProductResource::collection($this->products)
         ];
     }
 }

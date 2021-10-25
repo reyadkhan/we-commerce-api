@@ -8,7 +8,7 @@ use App\Repositories\UserRepository;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 
-class UserServiceImpl extends BaseServiceImpl implements UserService
+class UserServiceImpl implements UserService
 {
     public function __construct(protected UserRepository $repository) {}
 
