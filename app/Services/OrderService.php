@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use Illuminate\Contracts\Pagination\Paginator;
 
@@ -25,4 +26,6 @@ interface OrderService
     public function update(int $id, array $orderCreateInfo): Order;
 
     public function deleteById(int $id): bool;
+
+    public function updateStatus(int $id, OrderStatus $status);
 }

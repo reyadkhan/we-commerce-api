@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -78,8 +79,28 @@ class OrderRepository extends BaseRepository
             ->orderBy('created_at', 'desc')->paginate(page: $page, perPage: $perPage);
     }
 
+    /**
+     * Order find by id and user id
+     *
+     * @param int $id Order identifier
+     * @param int $userId User identifier
+     * @return Order Found order
+     */
     public function findByIdAndUserIdORFail(int $id, int $userId): Order
     {
         return $this->model->where('user_id', $userId)->findOrFail($id);
+    }
+
+    /**
+     * Order status update
+     *
+     * @param Order $order Order to be updated
+     * @param OrderStatus $status Order new status
+     * @return bool
+     */
+    public function updateStatus(Order $order, OrderStatus $status): bool
+    {
+        $order->status = $status;
+        return $order->save();
     }
 }

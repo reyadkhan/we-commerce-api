@@ -2,6 +2,7 @@
 
 namespace App\Services\Impl;
 
+use App\Enums\OrderStatus;
 use App\Events\OrderSavedEvent;
 use App\Exceptions\StockIsNotAvailableException;
 use App\Models\Order;
@@ -109,5 +110,15 @@ class OrderServiceImpl implements OrderService
             $map += $orderInfo->toMap();
         }
         return $map;
+    }
+
+    public function updateStatus(int $id, OrderStatus $status)
+    {
+        $order = $this->findById($id);
+
+        if( ! isAdmin() || OrderStatus::CREATED()->is($status)) {
+            throw new UnauthorizedException;
+        }
+        $this->repository->updateStatus($order, $status);
     }
 }
