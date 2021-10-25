@@ -15,12 +15,9 @@ use Illuminate\Contracts\Pagination\Paginator;
 class OrderServiceImpl extends BaseServiceImpl implements OrderService
 {
     public function __construct(
-        OrderRepository $repository,
+        protected OrderRepository $repository,
         private ProductRepository $productRepo
-    )
-    {
-        $this->repository = $repository;
-    }
+    ) {}
 
     public function findById(int $id): Order
     {
