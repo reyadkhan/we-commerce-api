@@ -18,6 +18,10 @@ class Order extends Model
         'status' => OrderStatus::CREATED
     ];
 
+    protected $casts = [
+        'status' => OrderStatus::class
+    ];
+
     /**
      * Order products
      *
