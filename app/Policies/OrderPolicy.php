@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -9,6 +10,12 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class OrderPolicy
 {
     use HandlesAuthorization;
+
+    public function update(User $user, Order $order)
+    {
+        return $user->id === $order->user_id
+            && OrderStatus::CREATED()->is($order->status);
+    }
 
     /**
      * Determine whether the user can delete the model.

@@ -10,7 +10,9 @@ use Illuminate\Contracts\Pagination\Paginator;
 
 class ProductServiceImpl extends BaseServiceImpl implements ProductService
 {
-    public function __construct(protected ProductRepository $repository) {}
+    public function __construct(ProductRepository $repository) {
+        $this->repository = $repository;
+    }
 
     public function findById(int $id): Product
     {

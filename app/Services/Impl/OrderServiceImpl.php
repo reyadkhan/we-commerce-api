@@ -5,35 +5,44 @@ namespace App\Services\Impl;
 use App\Events\OrderSavedEvent;
 use App\Exceptions\StockIsNotAvailableException;
 use App\Models\Order;
-use App\Models\User;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use App\Services\OrderService;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Validation\UnauthorizedException;
 
-class OrderServiceImpl extends BaseServiceImpl implements OrderService
+class OrderServiceImpl implements OrderService
 {
     public function __construct(
-        protected OrderRepository $repository,
+        private OrderRepository $repository,
         private ProductRepository $productRepo
     ) {}
 
+    public function paginate(mixed $page = 1, mixed $perPage = 20): Paginator
+    {
+        if(isAdmin()) {
+            return $this->repository->paginate($page, $perPage);
+        }
+        return $this->repository->paginateByUserId(authId(), $page, $perPage);
+    }
+
     public function findById(int $id): Order
     {
-        return $this->repository->findByIdOrFail($id);
+        if(isAdmin()) {
+            return $this->repository->findByIdOrFail($id);
+        }
+        return $this->repository->findByIdAndUserIdORFail($id, authId());
     }
 
     /**
-     * @param User|Authenticatable $user
      * @param array[OrderCreateDTO] $orderCreateInfo
      * @return Order
      */
-    public function create(User|Authenticatable $user, array $orderCreateInfo): Order
+    public function create(array $orderCreateInfo): Order
     {
         $productIdQuantityMap = $this->extractProductIdQuantityMap($orderCreateInfo);
         $productInfo = $this->generateProductsOrderInfo($productIdQuantityMap);
-        $order = $this->repository->create($user, $productInfo);
+        $order = $this->repository->create(authUser(), $productInfo);
         OrderSavedEvent::dispatch($order);
         return $order;
     }
@@ -46,6 +55,7 @@ class OrderServiceImpl extends BaseServiceImpl implements OrderService
     public function update(int $id, array $orderCreateInfo): Order
     {
         $order = $this->repository->findByIdOrFail($id);
+        $this->throwIfNotAuthorizedToUpdate($order);
         $productIdQuantityMap = $this->extractProductIdQuantityMap($orderCreateInfo);
         $productInfo = $this->generateProductsOrderInfo($productIdQuantityMap);
         $updatedOrder = $this->repository->update($order, $productInfo);
@@ -53,13 +63,17 @@ class OrderServiceImpl extends BaseServiceImpl implements OrderService
         return $updatedOrder;
     }
 
+    private function throwIfNotAuthorizedToUpdate(Order $order)
+    {
+        if(authUser()->cannot('update', $order)) {
+            throw new UnauthorizedException;
+        }
+    }
+
     public function deleteById(int $id): bool
     {
         $order = $this->repository->findById($id);
-
-        if(request()->user()->cannot('delete', $order)) {
-            abort(403);
-        }
+        $this->throwIfNotAuthorizedToUpdate($order);
         return $this->repository->delete($order);
     }
 
@@ -95,15 +109,5 @@ class OrderServiceImpl extends BaseServiceImpl implements OrderService
             $map += $orderInfo->toMap();
         }
         return $map;
-    }
-
-    public function paginateByUserId(int $userId, mixed $page = 1, mixed $perPage = 20): Paginator
-    {
-        return $this->repository->paginateByUserId($userId, $page, $perPage);
-    }
-
-    public function findByIdAndUserId(int $id, int $userId): Order
-    {
-        return $this->repository->findByIdAndUserIdORFail($id, $userId);
     }
 }
