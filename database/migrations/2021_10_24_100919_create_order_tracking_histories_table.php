@@ -22,7 +22,7 @@ class CreateOrderTrackingHistoriesTable extends Migration
             $table->decimal('order_price', 10, 2)->nullable();
             $table->string('product_ids')->nullable();
             $table->integer('order_quantity')->nullable();
-            $table->tinyText('details')->nullable();
+            $table->text('details')->nullable();
             $table->timestamps();
         });
     }
