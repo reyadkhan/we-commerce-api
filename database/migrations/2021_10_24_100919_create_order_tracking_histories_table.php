@@ -20,6 +20,7 @@ class CreateOrderTrackingHistoriesTable extends Migration
                 ->constrained('orders')->cascadeOnDelete();
             $table->enum('status', OrderTrackingStatus::getValues());
             $table->decimal('order_price', 10, 2)->nullable();
+            $table->string('product_ids')->nullable();
             $table->integer('order_quantity')->nullable();
             $table->tinyText('details')->nullable();
             $table->timestamps();
