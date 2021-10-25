@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Enums\OrderTrackingStatus;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderTrackingHistory extends Model
 {
     protected $fillable = [
-        'status', 'order_price', 'order_quantity', 'product_ids'
+        'status', 'order_price', 'order_quantity', 'product_ids', 'details'
     ];
 
     protected $casts = [
@@ -34,6 +35,11 @@ class OrderTrackingHistory extends Model
     public function setProductIdsAttribute(array $productIds)
     {
         $this->attributes['product_ids'] = implode(',', $productIds);
+    }
+
+    public function getProductsAttribute(): Collection
+    {
+        return Product::findMany($this->productIds);
     }
 
     /**

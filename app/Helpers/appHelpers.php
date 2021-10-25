@@ -1,7 +1,11 @@
 <?php
 
 use App\Enums\OrderTrackingStatus;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
+
+const GUARD = 'sanctum';
 
 if( ! function_exists("getPageVar")) {
     function getPageVar(): array {
@@ -13,8 +17,20 @@ if( ! function_exists("getPageVar")) {
 
 if( ! function_exists('isAdmin')) {
     function isAdmin(): bool {
-        $auth = auth('sanctum');
+        $auth = auth(GUARD);
         return $auth->check() && $auth->user()->is_admin;
+    }
+}
+
+if( ! function_exists('authUser')) {
+    function authUser(): Authenticatable|User|null {
+        return auth(GUARD)->user();
+    }
+}
+
+if( ! function_exists('authId')) {
+    function authId(): int|null {
+        return auth(GUARD)->id();
     }
 }
 

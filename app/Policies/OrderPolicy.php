@@ -21,4 +21,16 @@ class OrderPolicy
     {
         return $user->id === $order->user_id;
     }
+
+    /**
+     * Determine whether the user can access the order history
+     *
+     * @param User $user
+     * @param Order $order
+     * @return bool
+     */
+    public function getHistory(User $user, Order $order)
+    {
+        return isAdmin() || $user->id === $order->user_id;
+    }
 }

@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserServiceImpl extends BaseServiceImpl implements UserService
 {
-    public function __construct(UserRepository $repository) {
-        $this->repository = $repository;
-    }
+    public function __construct(protected UserRepository $repository) {}
 
     public function register(RegisterDTO $registerInfo): User
     {
