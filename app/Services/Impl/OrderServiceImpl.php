@@ -10,6 +10,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use App\Services\OrderService;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\UnauthorizedException;
 
 class OrderServiceImpl implements OrderService
@@ -132,5 +133,11 @@ class OrderServiceImpl implements OrderService
         return $order;
     }
 
-
+    public function findAllByStatus(OrderStatus $status): Collection
+    {
+        if(isAdmin()) {
+            return $this->repository->findAllByStatus($status);
+        }
+        return $this->repository->findAllByUserIdAndStatus(authId(), $status);
+    }
 }
