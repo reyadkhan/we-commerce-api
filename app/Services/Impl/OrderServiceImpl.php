@@ -117,7 +117,7 @@ class OrderServiceImpl implements OrderService
     {
         $order = $this->findById($id);
 
-        if( ! isAdmin() || OrderStatus::CREATED()->is($status)) {
+        if( ! isAdmin() || OrderStatus::CREATED()->is($status) || OrderStatus::DELIVERED()->is($order->status)) {
             throw new UnauthorizedException;
         }
         $this->repository->updateStatus($order, $status);
