@@ -16,8 +16,6 @@ class OrderProductObserver
     {
         $order = $orderProduct->pivotParent;
         $order->amount += $this->getTotalAmount($orderProduct);
-        $orderProduct->product->quantity -= $orderProduct->quantity;
-        $orderProduct->product->save();
         $order->save();
     }
 
@@ -29,8 +27,6 @@ class OrderProductObserver
             $order = $orderProduct->pivotParent;
             $quantityDiff = $orderProduct->quantity - $prevQuantity;
             $order->amount += $orderProduct->unit_price * $quantityDiff;
-            $orderProduct->product->quantity -= $quantityDiff;
-            $orderProduct->product->save();
             $order->save();
         }
     }
@@ -46,8 +42,6 @@ class OrderProductObserver
         $orderProduct->refresh();
         $order = $orderProduct->pivotParent;
         $order->amount = max($order->amount - $this->getTotalAmount($orderProduct), 0);
-        $orderProduct->product->quantity += $orderProduct->quantity;
-        $orderProduct->product->save();
         $order->save();
     }
 
