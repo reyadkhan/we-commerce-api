@@ -28,4 +28,12 @@ interface OrderService
     public function deleteById(int $id): bool;
 
     public function updateStatus(int $id, OrderStatus $status);
+
+    /**
+     * Search by order unique id
+     *
+     * @param string $orderId order generated unique id
+     * @return Order
+     */
+    public function findByOrderId(string $orderId): Order;
 }

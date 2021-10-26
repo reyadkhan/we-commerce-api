@@ -121,4 +121,16 @@ class OrderServiceImpl implements OrderService
         }
         $this->repository->updateStatus($order, $status);
     }
+
+    public function findByOrderId(string $orderId): Order
+    {
+        $order = $this->repository->findByOrderIdOrFail($orderId);
+
+        if(authUser()->cannot('show', $order)) {
+            throw new UnauthorizedException;
+        }
+        return $order;
+    }
+
+
 }
