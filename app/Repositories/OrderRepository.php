@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrderRepository extends BaseRepository
@@ -113,5 +114,28 @@ class OrderRepository extends BaseRepository
     public function findByOrderIdOrFail(string $orderId): ?Order
     {
         return $this->model->where('order_id', $orderId)->firstOrFail();
+    }
+
+    /**
+     * Find all order by status
+     *
+     * @param OrderStatus $status
+     * @return Collection Order collection
+     */
+    public function findAllByStatus(OrderStatus $status): Collection
+    {
+        return $this->model->where('status', $status)->get();
+    }
+
+    /**
+     * Find all order by user id and status
+     *
+     * @param int $userId user identifier
+     * @param OrderStatus $status
+     * @return Collection order collection
+     */
+    public function findAllByUserIdAndStatus(int $userId, OrderStatus $status): Collection
+    {
+        return $this->model->where('user_id', $userId)->where('status', $status)->get();
     }
 }
