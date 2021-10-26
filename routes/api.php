@@ -65,6 +65,7 @@ Route::get('orders/{orderId}/tracking-histories', OrderTrackingHistoryController
  * Search Controller
  */
 Route::post('search-products', [SearchController::class, 'searchProduct']);
+Route::post('search-orders/{orderId}', [SearchController::class, 'searchOrder']);
 
 /**
  * Sort Controller

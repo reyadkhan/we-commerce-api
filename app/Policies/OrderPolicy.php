@@ -11,6 +11,25 @@ class OrderPolicy
 {
     use HandlesAuthorization;
 
+    /**
+     * Order visibility access
+     *
+     * @param User $user request user
+     * @param Order $order found record
+     * @return bool
+     */
+    public function show(User $user, Order $order)
+    {
+        return isAdmin() || $order->user_id === $user->id;
+    }
+
+    /**
+     * Order update access
+     *
+     * @param User $user request user
+     * @param Order $order found record
+     * @return bool
+     */
     public function update(User $user, Order $order)
     {
         return $user->id === $order->user_id

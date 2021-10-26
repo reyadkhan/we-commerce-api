@@ -103,4 +103,15 @@ class OrderRepository extends BaseRepository
         $order->status = $status;
         return $order->save();
     }
+
+    /**
+     * Find order by generated order id
+     *
+     * @param string $orderId Order generated unique id
+     * @return Order|null
+     */
+    public function findByOrderIdOrFail(string $orderId): ?Order
+    {
+        return $this->model->where('order_id', $orderId)->firstOrFail();
+    }
 }
