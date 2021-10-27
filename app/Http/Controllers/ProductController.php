@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\DTOs\ProductDTO;
 use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Services\ProductService;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class ProductController extends Controller
@@ -16,10 +16,10 @@ class ProductController extends Controller
         $this->middleware(['auth:sanctum', 'admin'])->except('index', 'show');
     }
 
-    public function index(): AnonymousResourceCollection
+    public function index(): ProductCollection
     {
         ['page' => $page, 'perPage' => $perPage] = getPageVar();
-        return ProductResource::collection($this->service->paginate($page, $perPage));
+        return new ProductCollection($this->service->paginate($page, $perPage));
     }
 
     public function show(int $id): ProductResource

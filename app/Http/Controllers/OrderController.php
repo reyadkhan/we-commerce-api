@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\DTOs\OrderCreateDTO;
 use App\Enums\OrderStatus;
 use App\Http\Requests\OrderRequest;
+use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResource;
 use App\Services\OrderService;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,10 +19,10 @@ class OrderController extends Controller
         $this->middleware('admin')->only('updateStatus');
     }
 
-    public function index(): AnonymousResourceCollection
+    public function index(): OrderCollection
     {
         ['page' => $page, 'perPage' => $perPage] = getPageVar();
-        return OrderResource::collection($this->service->paginate($page, $perPage));
+        return new OrderCollection($this->service->paginate($page, $perPage));
     }
 
     public function show(int $id): OrderResource

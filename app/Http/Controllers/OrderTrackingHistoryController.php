@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OrderTrackingResource;
+use App\Http\Resources\OrderTrackingCollection;
 use App\Services\OrderTrackingHistoryService;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrderTrackingHistoryController extends Controller
 {
@@ -17,10 +16,10 @@ class OrderTrackingHistoryController extends Controller
      * Get an order tracking history
      *
      * @param int $orderId Order identifier
-     * @return AnonymousResourceCollection
+     * @return OrderTrackingCollection
      */
-    public function __invoke(int $orderId): AnonymousResourceCollection
+    public function __invoke(int $orderId): OrderTrackingCollection
     {
-        return OrderTrackingResource::collection($this->service->getOrderHistory($orderId));
+        return new OrderTrackingCollection($this->service->getOrderHistory($orderId));
     }
 }
