@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResource;
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductCollection;
 use App\Services\OrderService;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Validator;
 
 class SearchController extends Controller
@@ -20,10 +20,10 @@ class SearchController extends Controller
         $this->middleware('auth:sanctum')->only('searchOrder', 'searchOrderByStatus');
     }
 
-    public function searchProduct(Request $request): AnonymousResourceCollection
+    public function searchProduct(Request $request): ProductCollection
     {
         ['page' => $page, 'perPage' => $perPage] = getPageVar();
-        return ProductResource::collection(
+        return new ProductCollection(
             $this->productService->searchByName($request->name ?? '', $page, $perPage));
     }
 
@@ -32,13 +32,13 @@ class SearchController extends Controller
         return new OrderResource($this->orderService->findByOrderId($orderId));
     }
 
-    public function searchOrderByStatus(string $status): AnonymousResourceCollection
+    public function searchOrderByStatus(string $status): OrderCollection
     {
         $status = ucfirst(strtolower($status));
         Validator::make(compact('status'), [
             'status' => 'required|string|in:' . implode(',', OrderStatus::getValues())
         ])->validate();
-        return OrderResource::collection(
+        return new OrderCollection(
             $this->orderService->findAllByStatus(OrderStatus::fromValue($status)));
     }
 }
