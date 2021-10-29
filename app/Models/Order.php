@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
@@ -52,6 +53,16 @@ class Order extends Model
     public function trackingHistories(): HasMany
     {
         return $this->hasMany(OrderTrackingHistory::class);
+    }
+
+    /**
+     * Order notification
+     *
+     * @return MorphOne
+     */
+    public function notification(): MorphOne
+    {
+        return $this->morphOne(Notification::class, 'notifiable');
     }
 
     /**
