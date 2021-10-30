@@ -3,6 +3,7 @@
 namespace App\Services\Impl;
 
 use App\Enums\OrderStatus;
+use App\Events\OrderCreatedEvent;
 use App\Events\OrderSavedEvent;
 use App\Exceptions\StockIsNotAvailableException;
 use App\Models\Order;
@@ -41,11 +42,11 @@ class OrderServiceImpl implements OrderService
      * @return Order
      */
     public function create(array $orderCreateInfo): Order
-    {
+    { //TODO this will be improved for better performance [async and quable events]
         $productIdQuantityMap = $this->extractProductIdQuantityMap($orderCreateInfo);
         $productInfo = $this->generateProductsOrderInfo($productIdQuantityMap);
         $order = $this->repository->create(authUser(), $productInfo);
-        OrderSavedEvent::dispatch($order);
+        $this->dispatchOrderCreatedEvents($order);
         return $order;
     }
 
@@ -70,6 +71,17 @@ class OrderServiceImpl implements OrderService
         if(authUser()->cannot('update', $order)) {
             throw new UnauthorizedException;
         }
+    }
+
+    /**
+     * This will dispatch created and saved events for notification and order tracking history
+     *
+     * @param Order $order newly created events
+     */
+    private function dispatchOrderCreatedEvents(Order $order)
+    { //TODO this events listener should be quable for better performance
+        OrderSavedEvent::dispatch($order);
+        OrderCreatedEvent::dispatch($order);
     }
 
     public function deleteById(int $id): bool

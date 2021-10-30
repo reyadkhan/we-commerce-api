@@ -22,7 +22,8 @@ class SendOrderNotification
         $order = $event->order;
         $notification = $order->notification()->create([
             'title' => 'New order notification',
-            'details' => 'A new order has been placed under ' . config('app.name')
+            'details' => 'A new order has been placed with the amount of '
+                . $order->amount . 'Tk. under ' . config('app.name')
         ]);
         $this->notifyToAdmin($notification);
     }
