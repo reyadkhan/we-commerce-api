@@ -12,14 +12,9 @@ class NotificationServiceImpl extends BaseServiceImpl implements NotificationSer
         $this->repository = $repository;
     }
 
-    public function markAsRead(int $id): bool
+    public function markAsRead(array $ids): bool
     {
-        $notification = $this->repository->findByIdOrFail($id);
-
-        if( ! $notification->is_read) {
-            return $this->repository->markAsRead($notification);
-        }
-        return true;
+        return $this->repository->markAsReadByIdIn($ids);
     }
 
     public function unreadCount(): int
