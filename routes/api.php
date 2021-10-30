@@ -84,4 +84,4 @@ Route::post('users', RegisterController::class);
  */
 Route::get('notifications', [NotificationController::class, 'index']);
 Route::get('notifications/unread-count', [NotificationController::class, 'unreadNotificationCount']);
-Route::patch('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
+Route::patch('notifications/mark-as-read', [NotificationController::class, 'markAsRead']);

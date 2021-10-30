@@ -16,10 +16,10 @@ class NotificationRepository extends BaseRepository
         return $this->model->findOrFail($id);
     }
 
-    public function markAsRead(Notification $notification): bool
+    public function markAsReadByIdIn(array $ids): bool
     {
-        $notification->is_read = true;
-        return $notification->save();
+        return $this->model->whereIn('id', $ids)
+            ->where('is_read', false)->update(['is_read' => true]);
     }
 
     public function countByIsRead(bool $isRead): int
