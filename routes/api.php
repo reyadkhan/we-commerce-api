@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingHistoryController;
 use App\Http\Controllers\ProductController;
@@ -77,3 +78,10 @@ Route::get('sort-products', [SortController::class, 'sortProduct']);
  * Register Controller
  */
 Route::post('users', RegisterController::class);
+
+/**
+ * Notification Controller
+ */
+Route::get('notifications', [NotificationController::class, 'index']);
+Route::get('notifications/unread-count', [NotificationController::class, 'unreadNotificationCount']);
+Route::patch('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);

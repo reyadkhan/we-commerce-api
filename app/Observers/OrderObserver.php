@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Enums\OrderStatus;
+use App\Events\OrderCreatedEvent;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -11,6 +12,11 @@ class OrderObserver
     public function creating(Order $order)
     {
         $order->attachOrderId();
+    }
+
+    public function created(Order $order)
+    {
+        OrderCreatedEvent::dispatch($order);
     }
 
     public function updating(Order $order)
