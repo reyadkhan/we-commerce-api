@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Resources\UserResource;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,10 +22,7 @@ class LoginController
     private function authInfo(): JsonResponse {
         $user = Auth::user();
         $token = $user->createToken('user-' . $user->id)->plainTextToken;
-        return response()->json([
-            'user' => new UserResource($user),
-            'token' => $token
-        ]);
+        return response()->json(compact('token'));
     }
 
     /**
