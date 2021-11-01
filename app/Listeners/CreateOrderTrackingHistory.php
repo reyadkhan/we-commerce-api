@@ -26,7 +26,7 @@ class CreateOrderTrackingHistory
             && $event->order->trackingHistories()->exists()) {
             $history->status = OrderTrackingStatus::UPDATED();
         } else {
-            $history->status = $event->order->status;
+            $history->status = OrderTrackingStatus::fromValue($event->order->status->value);
         }
         $history->details = getOrderTrackingDetails(
             $history->status,
