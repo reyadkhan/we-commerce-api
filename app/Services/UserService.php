@@ -8,4 +8,6 @@ use App\Models\User;
 interface UserService
 {
     public function register(RegisterDTO $registerInfo): User;
+
+    public function todaysUserCount(): int;
 }

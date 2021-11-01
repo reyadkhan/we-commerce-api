@@ -38,4 +38,6 @@ interface OrderService
     public function findByOrderId(string $orderId): Order;
 
     public function findAllByStatus(OrderStatus $status, int $page = 1, int $perPage = 20): Paginator;
+
+    public function todaysOrderCount(): int;
 }

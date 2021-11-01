@@ -19,4 +19,17 @@ class UserRepository extends BaseRepository
     {
         return $this->model->create($data)->refresh();
     }
+
+    /**
+     * Count user within N days
+     *
+     * @param int $day day number
+     * @return int
+     */
+    public function countUserByLastNDays(int $day): int
+    {
+        $from = now()->subDays($day - 1)->startOfDay();
+        $to = now();
+        return $this->model->whereBetween('created_at', [$from, $to])->count();
+    }
 }

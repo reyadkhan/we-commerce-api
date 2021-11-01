@@ -230,4 +230,17 @@ class OrderRepository extends BaseRepository
         }
         return $this->returnCombinedPagination($orders, $deliveries, $perPage, $page);
     }
+
+    /**
+     * Count order of last N days
+     *
+     * @param int $day day number
+     * @return int order count
+     */
+    public function countOrderByLastNDays(int $day): int
+    {
+        $from = now()->subDays($day - 1)->startOfDay();
+        $to = now();
+        return $this->model->whereBetween('created_at', [$from, $to])->count();
+    }
 }

@@ -40,4 +40,10 @@ class ProductServiceImpl extends BaseServiceImpl implements ProductService
         $colWithDirection = array_map(fn($direction) => in_array($direction, ['asc', 'desc']) ? $direction : 'asc', $sortByColumns);
         return $this->repository->orderByColumns($colWithDirection, $page, $perPage);
     }
+
+
+    public function totalProductCount(): int
+    {
+        return $this->repository->totalCount();
+    }
 }

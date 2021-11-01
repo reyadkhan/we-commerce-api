@@ -101,4 +101,14 @@ class ProductRepository extends BaseRepository
     {
         return $this->model->findMany($ids);
     }
+
+    /**
+     * Total product count
+     *
+     * @return int
+     */
+    public function totalCount(): int
+    {
+        return $this->model->count();
+    }
 }
