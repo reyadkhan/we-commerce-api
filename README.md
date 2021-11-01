@@ -12,7 +12,7 @@
 ```
 _Create a database and put it to **.env** file_
 ```
-php artisan migrate --seed
+    php artisan migrate --seed
 ```
 _This will create a default admin user in the database with E-mail: `admin@wecommerce.com` and Pass: `admin123`_
 #### Order notification for admin
@@ -20,7 +20,7 @@ _To get order notification in admin mail, Please configure email in the **.env**
 #### Schedule task
 _For task scheduling `(Delivered orders move to deliveries)` in local_
 ```
-php artisan schedule:work
+    php artisan schedule:work
 ```
 
-***NB:** The api doc has been placed under **_test/post-main_** directory
+**NB:** The api doc has been placed under **_test/post-main_** directory
