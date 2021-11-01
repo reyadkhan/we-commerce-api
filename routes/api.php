@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingHistoryController;
@@ -37,6 +38,11 @@ Route::post('auth/login', LoginController::class);
  * Logout Controller
  */
 Route::post('auth/logout', LogoutController::class);
+
+/**
+ * DashBoard Controller
+ */
+Route::get('dashboard-info', DashboardController::class);
 
 /**
  * Product Controller

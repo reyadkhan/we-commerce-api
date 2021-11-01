@@ -21,4 +21,6 @@ interface ProductService
     public function searchByName(string $name, int $page = 1, int $perPage = 15): Paginator;
 
     public function sortByColumns(array $sortByColumns, int $page = 1, int $perPage = 20): Paginator;
+
+    public function totalProductCount(): int;
 }

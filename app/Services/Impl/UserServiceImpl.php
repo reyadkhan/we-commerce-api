@@ -18,4 +18,9 @@ class UserServiceImpl implements UserService
         $fillableData['password'] = Hash::make($fillableData['password']);
         return $this->repository->create($fillableData);
     }
+
+    public function todaysUserCount(): int
+    {
+        return $this->repository->countUserByLastNDays(1);
+    }
 }

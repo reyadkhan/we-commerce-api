@@ -155,4 +155,11 @@ class OrderServiceImpl implements OrderService
         }
         return $this->repository->findAllByUserIdAndStatus(authId(), $status, $page, $perPage);
     }
+
+    public function todaysOrderCount(): int
+    {
+        return $this->repository->countOrderByLastNDays(1);
+    }
+
+
 }
