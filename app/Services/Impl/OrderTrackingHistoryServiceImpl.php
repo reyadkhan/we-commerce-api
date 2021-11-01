@@ -13,7 +13,7 @@ class OrderTrackingHistoryServiceImpl implements OrderTrackingHistoryService
 
     public function getOrderHistory(int $orderId): Collection
     {
-        $order = $this->orderRepo->findByIdOrFail($orderId);
+        $order = $this->orderRepo->findCombinedByIdOrFail($orderId);
 
         if(request()->user()->cannot('getHistory', $order)) {
             throw new UnauthorizedException;

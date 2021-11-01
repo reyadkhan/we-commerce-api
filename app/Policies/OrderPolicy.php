@@ -45,7 +45,9 @@ class OrderPolicy
      */
     public function delete(User $user, Order $order)
     {
-        return $user->id === $order->user_id;
+        return $user->id === $order->user_id
+            && (OrderStatus::CREATED()->is($order->status)
+                || OrderStatus::DELIVERED()->is($order->status));
     }
 
     /**

@@ -38,7 +38,8 @@ class SearchController extends Controller
         Validator::make(compact('status'), [
             'status' => 'required|string|in:' . implode(',', OrderStatus::getValues())
         ])->validate();
+        ['page' => $page, 'perPage' => $perPage] = getPageVar();
         return new OrderCollection(
-            $this->orderService->findAllByStatus(OrderStatus::fromValue($status)));
+            $this->orderService->findAllByStatus(OrderStatus::fromValue($status), $page, $perPage));
     }
 }

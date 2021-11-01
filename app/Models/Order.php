@@ -31,8 +31,10 @@ class Order extends Model
      */
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class)
-            ->using(OrderProduct::class)->withPivot('unit_price', 'quantity');
+        //Table name and foreign key specified since Delivery model extended from Order
+        return $this->belongsToMany(Product::class, 'order_product', 'order_id')
+            ->using(OrderProduct::class)
+            ->withPivot('unit_price', 'quantity')->withTrashed();
     }
 
     /**
@@ -52,7 +54,7 @@ class Order extends Model
      */
     public function trackingHistories(): HasMany
     {
-        return $this->hasMany(OrderTrackingHistory::class);
+        return $this->hasMany(OrderTrackingHistory::class, 'order_id');
     }
 
     /**

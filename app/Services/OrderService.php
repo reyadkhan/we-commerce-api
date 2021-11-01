@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Collection;
 
 interface OrderService
 {
@@ -38,5 +37,5 @@ interface OrderService
      */
     public function findByOrderId(string $orderId): Order;
 
-    public function findAllByStatus(OrderStatus $status): Collection;
+    public function findAllByStatus(OrderStatus $status, int $page = 1, int $perPage = 20): Paginator;
 }

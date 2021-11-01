@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\OrderStatus;
 use App\Enums\OrderTrackingStatus;
 use App\Events\OrderSavedEvent;
 use App\Models\OrderTrackingHistory;
@@ -21,10 +22,11 @@ class CreateOrderTrackingHistory
         $history->order_quantity = $event->order->products->sum('pivot.quantity');
         $history->product_ids = $event->order->products->pluck('id')->toArray();
 
-        if( ! $event->order->trackingHistories()->exists()) {
-            $history->status = OrderTrackingStatus::CREATED();
-        } else {
+        if(OrderStatus::CREATED()->is($event->order->status)
+            && $event->order->trackingHistories()->exists()) {
             $history->status = OrderTrackingStatus::UPDATED();
+        } else {
+            $history->status = $event->order->status;
         }
         $history->details = getOrderTrackingDetails(
             $history->status,
