@@ -28,4 +28,15 @@ class Product extends Model
         return $this->belongsToMany(Order::class)
             ->using(OrderProduct::class)->withPivot('unit_price', 'quantity');
     }
+
+    /**
+     * Product all updated deliveries
+     *
+     * @return BelongsToMany
+     */
+    public function deliveries(): BelongsToMany
+    {
+        return $this->belongsToMany(Delivery::class, 'order_product', relatedPivotKey: 'order_id')
+            ->using(OrderProduct::class)->withPivot('unit_price', 'quantity');
+    }
 }

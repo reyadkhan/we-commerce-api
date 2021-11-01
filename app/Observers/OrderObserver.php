@@ -10,7 +10,9 @@ class OrderObserver
 {
     public function creating(Order $order)
     {
-        $order->attachOrderId();
+        if(empty($order->order_id)) {
+            $order->attachOrderId();
+        }
     }
 
     public function updating(Order $order)

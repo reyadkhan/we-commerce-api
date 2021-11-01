@@ -11,7 +11,6 @@ use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use App\Services\OrderService;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\UnauthorizedException;
 
 class OrderServiceImpl implements OrderService
@@ -21,7 +20,7 @@ class OrderServiceImpl implements OrderService
         private ProductRepository $productRepo
     ) {}
 
-    public function paginate(mixed $page = 1, mixed $perPage = 20): Paginator
+    public function paginate(int $page = 1, int $perPage = 20): Paginator
     {
         if(isAdmin()) {
             return $this->repository->paginate($page, $perPage);
@@ -32,9 +31,9 @@ class OrderServiceImpl implements OrderService
     public function findById(int $id): Order
     {
         if(isAdmin()) {
-            return $this->repository->findByIdOrFail($id);
+            return $this->repository->findCombinedByIdOrFail($id);
         }
-        return $this->repository->findByIdAndUserIdORFail($id, authId());
+        return $this->repository->findCombinedByIdAndUserIdORFail($id, authId());
     }
 
     /**
@@ -86,8 +85,11 @@ class OrderServiceImpl implements OrderService
 
     public function deleteById(int $id): bool
     {
-        $order = $this->repository->findById($id);
-        $this->throwIfNotAuthorizedToUpdate($order);
+        $order = $this->findById($id);
+
+        if(authUser()->cannot('delete', $order)) {
+            throw new UnauthorizedException;
+        }
         return $this->repository->delete($order);
     }
 
@@ -127,12 +129,13 @@ class OrderServiceImpl implements OrderService
 
     public function updateStatus(int $id, OrderStatus $status)
     {
-        $order = $this->findById($id);
+        $order = $this->repository->findByIdOrFail($id);
 
         if( ! isAdmin() || OrderStatus::CREATED()->is($status) || OrderStatus::DELIVERED()->is($order->status)) {
             throw new UnauthorizedException;
         }
         $this->repository->updateStatus($order, $status);
+        OrderSavedEvent::dispatch($order);
     }
 
     public function findByOrderId(string $orderId): Order
@@ -145,11 +148,11 @@ class OrderServiceImpl implements OrderService
         return $order;
     }
 
-    public function findAllByStatus(OrderStatus $status): Collection
+    public function findAllByStatus(OrderStatus $status, int $page = 1, int $perPage = 20): Paginator
     {
         if(isAdmin()) {
-            return $this->repository->findAllByStatus($status);
+            return $this->repository->findAllByStatus($status, $page, $perPage);
         }
-        return $this->repository->findAllByUserIdAndStatus(authId(), $status);
+        return $this->repository->findAllByUserIdAndStatus(authId(), $status, $page, $perPage);
     }
 }
