@@ -22,4 +22,4 @@ _For task scheduling `(Delivered orders move to deliveries)` in local_
     php artisan schedule:work
 ```
 
-**NB:** The api doc has been placed under **_test/post-main_** directory
+**NB:** The postman collection has been placed under **_test/post-main_** directory and also you can visit [**here**](https://documenter.getpostman.com/view/3527523/UVByKApx)
