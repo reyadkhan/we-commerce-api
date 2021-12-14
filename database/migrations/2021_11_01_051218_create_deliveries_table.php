@@ -17,7 +17,7 @@ class CreateDeliveriesTable extends Migration
             $table->unsignedBigInteger('id')->unique(); //This will be filled with order id
             $table->foreignId('user_id')->nullable()
                 ->constrained('users')->nullOnDelete();
-            $table->string('order_id')->unique('index_order_sequence');
+            $table->string('order_id')->unique('index_order_sequence_number');
             $table->decimal('amount', 12, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
