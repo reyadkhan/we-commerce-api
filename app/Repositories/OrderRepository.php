@@ -221,12 +221,12 @@ class OrderRepository extends BaseRepository
     public function findAllByUserIdAndStatus(int $userId, OrderStatus $status, int $page, int $perPage): Paginator
     {
         $orders = $this->model->where('user_id', $userId)->where('status', $status)
-            ->orderByDesc('created_at')->skip($page - 1 * $perPage)->limit($perPage)->get();
-        $deliveries = new Collection();
+            ->orderByDesc('created_at')->paginate(page: $page, perPage: $perPage);
+        $deliveries = new LengthAwarePaginator([], 0, $perPage);
 
         if(OrderStatus::DELIVERED()->is($status)) {
             $deliveries = $this->delivery->where('id', $userId)
-                ->orderByDesc('created_at')->skip($page - 1 * $perPage)->limit($perPage)->get();
+                ->orderByDesc('created_at')->paginate(page: $page, perPage: $perPage);
         }
         return $this->returnCombinedPagination($orders, $deliveries, $perPage, $page);
     }
