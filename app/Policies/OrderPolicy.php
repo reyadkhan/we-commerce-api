@@ -20,7 +20,7 @@ class OrderPolicy
      */
     public function show(User $user, Order $order)
     {
-        return isAdmin() || $order->user_id === $user->id;
+        return isAdmin() || $order->user_id == $user->id;
     }
 
     /**
@@ -32,7 +32,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order)
     {
-        return $user->id === $order->user_id
+        return $user->id == $order->user_id
             && OrderStatus::CREATED()->is($order->status);
     }
 
@@ -45,7 +45,7 @@ class OrderPolicy
      */
     public function delete(User $user, Order $order)
     {
-        return $user->id === $order->user_id
+        return $user->id == $order->user_id
             && in_array($order->status, [OrderStatus::CREATED, OrderStatus::REJECTED, OrderStatus::DELIVERED]);
     }
 
@@ -58,6 +58,6 @@ class OrderPolicy
      */
     public function getHistory(User $user, Order $order)
     {
-        return isAdmin() || $user->id === $order->user_id;
+        return isAdmin() || $user->id == $order->user_id;
     }
 }
