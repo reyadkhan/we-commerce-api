@@ -67,7 +67,7 @@ class ProductRepository extends BaseRepository
      * @param int $perPage pagination page size
      * @return Paginator pagination results
      */
-    public function findByNameLik(string $name, int $page, int $perPage): Paginator
+    public function findByNameLike(string $name, int $page, int $perPage): Paginator
     {
         $nameArray = explode(' ', $name);
         $query = $this->model->where('name', 'like', '%' . $nameArray[0] . '%');

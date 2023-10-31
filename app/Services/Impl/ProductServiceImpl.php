@@ -32,7 +32,7 @@ class ProductServiceImpl extends BaseServiceImpl implements ProductService
 
     public function searchByName(string $name, int $page = 1, int $perPage = 15): Paginator
     {
-        return $this->repository->findByNameLik($name, $page, $perPage);
+        return $this->repository->findByNameLike($name, $page, $perPage);
     }
 
     public function sortByColumns(array $sortByColumns, int $page = 1, int $perPage = 20): Paginator
