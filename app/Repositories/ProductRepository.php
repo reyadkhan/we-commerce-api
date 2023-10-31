@@ -69,8 +69,13 @@ class ProductRepository extends BaseRepository
      */
     public function findByNameLik(string $name, int $page, int $perPage): Paginator
     {
-        return $this->model->where('name', 'like', '%' . $name . '%')
-            ->orderBy('name')->paginate(page: $page, perPage: $perPage);
+        $nameArray = explode(' ', $name);
+        $query = $this->model->where('name', 'like', '%' . $nameArray[0] . '%');
+
+        for ($i = 1; $i < count($nameArray); $i ++) {
+            $query = $query->orWhere('name', 'like', '%' . $nameArray[$i] . '%');
+        }
+        return $query->orderBy('name')->paginate(page: $page, perPage: $perPage);
     }
 
     /**
